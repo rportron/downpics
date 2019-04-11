@@ -6,7 +6,7 @@ Dependance needed: BeautifulSoup
 # Gestting started
 ## Get the code on your machine.
 ```
-git clone git@github.com:rportron/downpics.git
+git clone git://github.com/rportron/downpics.git
 cd downpics
 ```
 
