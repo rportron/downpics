@@ -14,8 +14,9 @@ python3 recup-image.py dossier [-url url] [prefixe_nom_image]
 from sys import argv
 import urllib.request, re
 import os
+from random import random
 
-VERSION = '0.91'
+VERSION = '0.92'
 
 try:
     from bs4 import BeautifulSoup
@@ -43,17 +44,12 @@ def last_slash_position(url):
     return position
 
 def point_position(url):
-    ''' Renvoie la position du dernier point de l'url => le point avant l'extension du nom de fichier '''
+    '''
+    Renvoie la position du dernier point de l'url => le point avant l'extension du nom de fichier
+    '''
     position = -1
     for dummy_point in re.finditer('\.', url):
         position = dummy_point.start()
-    return position
-
-def question_mark_position(url):
-    ''' Return the question mark position, return -1 if not found '''
-    position = -1
-    for dummy_mark in re.finditer('\?', url):
-        position = dummy_mark.start()
     return position
 
 def racine_du_site(url):
@@ -81,16 +77,11 @@ def instagram(url):
     return url[0:25].lower() == 'https://www.instagram.com'
 
 def nom_de_l_image(url):
-    ''' Renvoie le nom de l'image (sert pour sauvegarder l'image avec son nom) '''
+    '''
+    Renvoie le nom de l'image (sert pour sauvegarder l'image avec son nom)
+    '''
     image_position = last_slash_position(url)
     return url[image_position + 1::]
-
-def nom_de_l_image_instagram(url):
-    ''' Return the Instagram image name  '''
-    image_position = last_slash_position(url)
-    url2 = url[image_position + 1::]
-    question_mark_pos = question_mark_position(url2)
-    return url2[0:question_mark_pos]
 
 def decode(url, headers):
     ''' Renvoie l'url parsé avec BeautifulSoup '''
@@ -178,13 +169,17 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             if match_pics:# != None: #if (match_jpg or match_png or match_gif):
                 nom_image = numerotation_image(nom_de_l_image(lien))
                 if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                    website_title = soup.title.string #soup.find_all('title')
-                    nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
+                    random_suffix = '_' + str(round(10000*random()))
+                    nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
+                    print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
+                    #website_title = soup.title.string #soup.find_all('title')
+                    #nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
                     #print('*** DEBUG image_downloader_linked : Nom de l\'image : ', nom_image)
-                    if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                        raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
-                    else:
-                        print('Le fichier est renommé en {}'.format(nom_image)) #DEMANDER L'ACCORD DE LA PERSONNE
+#                    if os.path.isfile(folder + prefixe_nom_image + nom_image):
+                         #1st solution (program exit):
+#                        #raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
+#                    else:
+#                        print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image)) #DEMANDER L'ACCORD DE LA PERSONNE
                 #print('*** DEBUG image_downloader_linked : Image repérée : ', nom_image)
                 #print(' *** DEBUG image_downloader_linked : racine du site : {} + lien de téléchargement : {}'.format(racine_du_site(url), racine_du_site(url) + lien))
                 if extension_valide(nom_image):
@@ -228,8 +223,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
         index_depart = result.span()[0] - 12 #--> position du début de og:image
         lien_image_instagram = str(recherche)[:index_depart][15:] #= le lien de l'image :)
         if lien_absolu(lien_image_instagram):
-            nom_image = nom_de_l_image_instagram(lien_image_instagram)
-            #print('*** DEBUG Nom image Instagram retrouvé : ', nom_image)
+            nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
             #print('*** DEBUG Lien Instagram retrouvé : ', lien_image_instagram)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
