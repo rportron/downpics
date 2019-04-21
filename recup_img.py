@@ -103,6 +103,15 @@ def decode(url, headers):
         text = data
     return BeautifulSoup(text, 'html.parser')
 
+def download_pic(complete_link, pic_complete_destination, url, lien):
+    try:
+        urllib.request.urlretrieve(complete_link, pic_complete_destination)
+        print('Saving: ', racine_du_site(url) + lien)
+    except urllib.request.HTTPError:
+        print('Download ERROR: {} (404: the page {} does not exist)'.format(nom_image, racine_du_site(url) + lien))
+    except OSError:
+        print('Download ERROR: {} (problem with the file name concerning the link {})'.format(nom_image, racine_du_site(url) + lien))
+
 ###################
 # image functions #
 ###################
@@ -183,30 +192,13 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 #print('*** DEBUG image_downloader_linked : Image repérée : ', nom_image)
                 #print(' *** DEBUG image_downloader_linked : racine du site : {} + lien de téléchargement : {}'.format(racine_du_site(url), racine_du_site(url) + lien))
                 if extension_valide(nom_image):
+                    pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
-                        try:
-                            urllib.request.urlretrieve(lien, folder + prefixe_nom_image + nom_image)
-                            print('Saving: ', racine_du_site(url) + lien)
-                        except urllib.request.HTTPError:
-                            print('ÉCHEC du téléchargement de {} (erreur 404 sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
-                        except OSError:
-                            print('ÉCHEC du téléchargement de {} (erreur de nom de fichier sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
+                        download_pic(lien, pic_complete_destination, url, lien)
                     elif lien_slash_slash(lien): #lien commençant par //
-                        try:
-                            urllib.request.urlretrieve('https:' + lien, folder + prefixe_nom_image + nom_image)
-                            print('Saving: ', racine_du_site(url) + lien)
-                        except urllib.request.HTTPError:
-                            print('ÉCHEC du téléchargement de {} (erreur 404 sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
-                        except OSError:
-                            print('ÉCHEC du téléchargement de {} (erreur de nom de fichier sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
+                        download_pic('https:' + lien, pic_complete_destination, url, lien)    
                     else:
-                        try:
-                            urllib.request.urlretrieve(racine_du_site(url) + lien, folder + prefixe_nom_image + nom_image)
-                            print('Saving: ', racine_du_site(url) + lien)
-                        except urllib.request.HTTPError:
-                             print('ÉCHEC du téléchargement de {} (erreur 404 sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
-                        except OSError:
-                            print('ÉCHEC du téléchargement de {} (erreur de nom de fichier sur le lien {})'.format(nom_image, racine_du_site(url) + lien))
+                        download_pic(racine_du_site(url) + lien, pic_complete_destination, url, lien)
 #                else:
 #                    print('*** DEBUG extension non valide ***')
 #            else:
