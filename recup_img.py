@@ -103,7 +103,7 @@ def decode(url, headers):
         text = data
     return BeautifulSoup(text, 'html.parser')
 
-def download_pic(complete_link, pic_complete_destination, url, lien):
+def download_pic(complete_link, pic_complete_destination, url, lien, nom_image):
     try:
         urllib.request.urlretrieve(complete_link, pic_complete_destination)
         print('Saving: ', racine_du_site(url) + lien)
@@ -194,11 +194,11 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 if extension_valide(nom_image):
                     pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
-                        download_pic(lien, pic_complete_destination, url, lien)
+                        download_pic(lien, pic_complete_destination, url, lien, nom_image)
                     elif lien_slash_slash(lien): #lien commençant par //
-                        download_pic('https:' + lien, pic_complete_destination, url, lien)    
+                        download_pic('https:' + lien, pic_complete_destination, url, lien, nom_image)    
                     else:
-                        download_pic(racine_du_site(url) + lien, pic_complete_destination, url, lien)
+                        download_pic(racine_du_site(url) + lien, pic_complete_destination, url, lien, nom_image)
 #                else:
 #                    print('*** DEBUG extension non valide ***')
 #            else:
@@ -220,7 +220,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
             print('Saving Instagram pic: ', lien_image_instagram)
-            download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, lien)
+            download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, lien, nom_image)
 
 #########################
 # Alternative functions #
