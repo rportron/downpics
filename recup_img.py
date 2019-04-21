@@ -219,8 +219,8 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             #print('*** DEBUG Lien Instagram retrouvé : ', lien_image_instagram)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
-            urllib.request.urlretrieve(lien_image_instagram, folder + prefixe_nom_image + nom_image)
             print('Saving Instagram pic: ', lien_image_instagram)
+            download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, lien)
 
 #########################
 # Alternative functions #
@@ -276,6 +276,8 @@ if __name__ == '__main__':
             url = input('\nPlease provide the link or type q to quit\n')
             if url == 'q':
                 download_again = False
+            elif url == '':
+                print('')
             else:
                 print("\nWill try to download pics from {} to {}\nWith pics prefix = {}\n".format(url, folder, prefixe_nom_image))
                 image_downloader_linked(url, folder, prefixe_nom_image)
