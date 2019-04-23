@@ -37,7 +37,6 @@ FANCY_BANNER = '    ___                      ___ _          \n' + \
 ################
 def last_slash_position(url):
     ''' Renvoie la position du dernier slash '''
-#    print('\n *** DEBUG last_slash_position ***, travail sur url : ', url)
     position = -1
     for dummy_slash in re.finditer('/', url):
         position = dummy_slash.start()
@@ -63,10 +62,7 @@ def racine_du_site(url):
 
 def lien_absolu(url):
     ''' Renvoie vrai si le lien est un lien absolu '''
-    if url[0:4].lower() == 'http':
-        return True
-    else:
-        return False
+    return url[0:4].lower() == 'http'
 
 def lien_slash_slash(url):
     ''' Détecte si l'url commence par // '''
@@ -139,8 +135,7 @@ def extension_valide(nom_image):
         return False
 
 def pic_name_analyse(url, title):
-    ''' Analyse l'url pour trouver un prefixe de l'image valide '''
-    #Devrait aussi analyser le titre du site
+    ''' Analyse l'url et le titre pour trouver un prefixe de l'image valide '''
     if lien_absolu(url):
         lien = url[4:]
     if lien_slash_slash(url):
@@ -148,8 +143,6 @@ def pic_name_analyse(url, title):
     else:
         lien = url
     titre = title
-    #print(' *** DEBUG lien = ', lien)
-    #print(' *** DEBUG titre = ', titre)
     return titre + '_'
 
 ##############################
@@ -158,7 +151,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
     '''
     Télécharge dans le dossier "folder" les images ciblées par des liens de la page "url"
     Vérifie s'il n'y a pas déjà une image du même nom (avec le prefixe) dans le dossier folder
-    # A DEVELOPPER # Si c'est le cas et si pas de préfixe proposé alors ajouter un préfixe trouvé dans le nom de l'url et le signaler à l'utilisateur
+    Si c'est le cas et si pas de préfixe proposé alors ajoute un suffixe et le signale à l'utilisateur
     '''
     soup = decode(url, headers)
     #search_pics = re.compile('[a-z0-9]+\.(gif|jpg|jpeg|png)+')
@@ -179,24 +172,16 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 nom_image = numerotation_image(nom_de_l_image(lien))
                 if os.path.isfile(folder + prefixe_nom_image + nom_image):
                     random_suffix = '_' + str(round(10000*random()))
-                    nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
-                    print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
                     #website_title = soup.title.string #soup.find_all('title')
                     #nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
-                    #print('*** DEBUG image_downloader_linked : Nom de l\'image : ', nom_image)
-#                    if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                         #1st solution (program exit):
-#                        #raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
-#                    else:
-#                        print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image)) #DEMANDER L'ACCORD DE LA PERSONNE
-                #print('*** DEBUG image_downloader_linked : Image repérée : ', nom_image)
-                #print(' *** DEBUG image_downloader_linked : racine du site : {} + lien de téléchargement : {}'.format(racine_du_site(url), racine_du_site(url) + lien))
+                    nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
+                    print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
                 if extension_valide(nom_image):
                     pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
                         download_pic(lien, pic_complete_destination, url, lien, nom_image)
                     elif lien_slash_slash(lien): #lien commençant par //
-                        download_pic('https:' + lien, pic_complete_destination, url, lien, nom_image)    
+                        download_pic('https:' + lien, pic_complete_destination, url, lien, nom_image)
                     else:
                         download_pic(racine_du_site(url) + lien, pic_complete_destination, url, lien, nom_image)
 #                else:
@@ -216,7 +201,6 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
         lien_image_instagram = str(recherche)[:index_depart][15:] #= le lien de l'image :)
         if lien_absolu(lien_image_instagram):
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
-            #print('*** DEBUG Lien Instagram retrouvé : ', lien_image_instagram)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
             print('Saving Instagram pic: ', lien_image_instagram)
