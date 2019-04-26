@@ -233,14 +233,20 @@ assert point_position("image2.jpeg") == 6
 assert last_slash_position('toto') == -1
 assert last_slash_position('http://') == 6
 
+def debug_arg(argv):
+    print(' *** DEBUG there is {} arguments: {}'.format(len(argv), argv)) #arg_numbers = len(argv)
+    i = 0
+    for dummy_arg in argv:
+        print('argument {}: {}'.format(i, dummy_arg))
+        i += 1
+
 def program_exit(message=' ___ done -_~'):
     print(message)
     exit()
 
-
 if __name__ == '__main__':
     print(FANCY_BANNER)
-    #print(' *** DEBUG {} arguments: {}'.format(len(argv), argv)) #arg_numbers = len(argv)
+    #debug_arg(argv)
     try:
         folder = argv[1]
     except IndexError:
@@ -250,7 +256,9 @@ if __name__ == '__main__':
         if create_folder == 'y':
             os.mkdir(folder)
         else:
-            program_exit()        
+            program_exit("m'kay")
+    if not folder[-1] == '/':
+        folder += '/'
     try:
         prefixe_nom_image = argv[2]
     except IndexError:
