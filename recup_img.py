@@ -16,7 +16,7 @@ import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.92'
+VERSION = '0.93'
 
 try:
     from bs4 import BeautifulSoup
@@ -233,15 +233,24 @@ assert point_position("image2.jpeg") == 6
 assert last_slash_position('toto') == -1
 assert last_slash_position('http://') == 6
 
+def program_exit(message=' ___ done -_~'):
+    print(message)
+    exit()
+
 
 if __name__ == '__main__':
     print(FANCY_BANNER)
-#    arg_numbers = len(argv)
+    #print(' *** DEBUG {} arguments: {}'.format(len(argv), argv)) #arg_numbers = len(argv)
     try:
         folder = argv[1]
     except IndexError:
-        print("Usage : python3 recup-image.py dossier [prefixe_nom_image]\n")
-        exit()
+        program_exit("Usage : python3 recup-image.py dossier [prefixe_nom_image]\n")
+    if not os.path.isdir(folder):
+        create_folder = input("The folder {} does not exist, should I create it?\n(y/n)".format(folder))
+        if create_folder == 'y':
+            os.mkdir(folder)
+        else:
+            program_exit()        
     try:
         prefixe_nom_image = argv[2]
     except IndexError:
@@ -266,7 +275,7 @@ if __name__ == '__main__':
                 print("\nWill try to download pics from {} to {}\nWith pics prefix = {}\n".format(url, folder, prefixe_nom_image))
                 image_downloader_linked(url, folder, prefixe_nom_image)
     #if not lien_absolu(url): # S'assure que c'est bien une url qui a été entré
-    print(' ___ done -_~')
+    program_exit()
 
 ################
 #Pour le futur #
