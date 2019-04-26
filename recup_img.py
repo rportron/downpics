@@ -174,14 +174,21 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             #match_png=re.search('png', lien, flags=re.IGNORECASE) #on recherhe de l'image
             #match_gif=re.search('gif', lien.lower()) #on recherhe de l'image
             if match_pics:# != None: #if (match_jpg or match_png or match_gif):
+                name_ok = True
                 nom_image = numerotation_image(nom_de_l_image(lien))
                 if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                    random_suffix = '_' + str(round(10000*random()))
-                    #website_title = soup.title.string #soup.find_all('title')
-                    #nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
-                    nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
-                    print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
-                if extension_valide(nom_image):
+                    print(url)
+                    if url[:23] == 'http://boards.4chan.org':
+                        #because in 4chan : downloaded twice
+                        name_ok = False
+                    else:
+                        name_ok = True
+                        random_suffix = '_' + str(round(10000*random()))
+                        #website_title = soup.title.string #soup.find_all('title')
+                        #nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
+                        nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
+                        print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
+                if extension_valide(nom_image) and name_ok:
                     pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
                         download_pic(lien, pic_complete_destination, url, lien, nom_image)
