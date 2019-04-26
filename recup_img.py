@@ -76,6 +76,11 @@ def instagram(url):
     ''' Renvoie vrai si c'est un lien Instagram '''
     return url[0:25].lower() == 'https://www.instagram.com'
 
+def url_is_chan(url):
+    ''' Return True is it is a chan url
+    because the pic is downloaded twice '''
+    return (url[:23] == 'http://boards.4chan.org' or url[:15] == 'https://8ch.net')
+
 def nom_de_l_image(url):
     '''
     Renvoie le nom de l'image (sert pour sauvegarder l'image avec son nom)
@@ -178,8 +183,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 nom_image = numerotation_image(nom_de_l_image(lien))
                 if os.path.isfile(folder + prefixe_nom_image + nom_image):
                     print(url)
-                    if url[:23] == 'http://boards.4chan.org':
-                        #because in 4chan : downloaded twice
+                    if url_is_chan(url): #because in xchan : pic is downloaded twice
                         name_ok = False
                     else:
                         name_ok = True
@@ -258,7 +262,7 @@ if __name__ == '__main__':
     try:
         folder = argv[1]
     except IndexError:
-        program_exit("Usage : python3 recup-image.py dossier [prefixe_nom_image]\n")
+        program_exit("Usage : python3 recup-img.py folder [-url url] [name_prefixe]\n")
     if not os.path.isdir(folder):
         create_folder = input("The folder {} does not exist, should I create it?\n(y/n)".format(folder))
         if create_folder == 'y':
