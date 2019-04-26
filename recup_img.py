@@ -18,10 +18,14 @@ from random import random
 
 VERSION = '0.93'
 
+def program_exit(message=' ___ done -_~'):
+    print(message)
+    exit()
+
 try:
     from bs4 import BeautifulSoup
 except:
-    print('You need to install BeautifulSoup first : pip install beautifulsoup4\nrecup-image version ', VERSION)
+    program_exit('You need to install BeautifulSoup first : pip install beautifulsoup4')
 
 PREFIXE_NOM_IMAGE = '' #pour renommer l'image avec un préfixe donné
 HEADERS = ('User-Agent', 'Mozilla/5.0 (Linux; Android 5.1.1; KFFOWI Build/LVY48F) AppleWebKit/537.36 (KHTML, like Gecko) Silk/59.3.1 like Chrome/59.0.3071.117 Safari/537.36')
@@ -89,8 +93,9 @@ def decode(url, headers):
     try:
         response = urllib.request.urlopen(url)
     except ValueError:
-        print('\n *** ERROR *** Unknown url')
-        exit()
+        program_exit('\n *** ERROR *** Unknown url')
+    except urllib.error.HTTPError:
+        program_exit('\n *** ERROR 404: the webpage does not exist ***')        
     data = response.read()      # a `bytes` object
     try:
         text = data.decode('utf-8') # a `str`; this step can't be used if data is binary
@@ -239,10 +244,6 @@ def debug_arg(argv):
     for dummy_arg in argv:
         print('argument {}: {}'.format(i, dummy_arg))
         i += 1
-
-def program_exit(message=' ___ done -_~'):
-    print(message)
-    exit()
 
 if __name__ == '__main__':
     print(FANCY_BANNER)
