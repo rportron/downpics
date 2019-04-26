@@ -15,7 +15,7 @@ cd downpics
 
 # How to use it
 ## Command line
-`python3 recup-image.py folder [-url url] [name_prefixe]`
+`python3 recup-img.py folder [-url url] [name_prefixe]`
 
 It will download pics from url into the folder (with the name_prefixe before if given)
 Don't write -url if you want to repeatly download pics from various url
