@@ -264,7 +264,7 @@ if __name__ == '__main__':
     except IndexError:
         program_exit("Usage : python3 recup-img.py folder [-url url] [name_prefixe]\n")
     if not os.path.isdir(folder):
-        create_folder = input("The folder {} does not exist, should I create it?\n(y/n)".format(folder))
+        create_folder = input("The folder {} does not exist, should I create it?\n(y/n) ".format(folder))
         if create_folder == 'y':
             os.mkdir(folder)
         else:
