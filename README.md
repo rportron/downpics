@@ -21,7 +21,7 @@ It will download pics from url into the folder (with the name_prefixe before if 
 Don't write -url if you want to repeatly download pics from various url
 
 For example:
-`python3 recup-image.py -url http://portron.org/downpics.html toto_` will download "linked pics" with toto_ added before the pic name
+`python3 recup-image.py -url http://portron.org/downpics.html toto_` will download all "linked pics" from the url with toto_ added before the pic name
 
 ## As a library
 import ...
