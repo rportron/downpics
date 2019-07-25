@@ -4,19 +4,20 @@ Created on Wed Jul 25 09:48:31 2018
 
 @author: rportron
 
-Télécharge les images contenues dans les urls d'un site web
+Tool to download "linked pics" from Internet page
 
-Usage :
-python3 recup-image.py dossier [-url url] [prefixe_nom_image]
+Usage (as a command line):
+python3 recup-image.py destination_folder [-url url] [picture_name_prefixe]
 
 """
 
 from sys import argv
+import argparse
 import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.93'
+VERSION = '0.94'
 
 def program_exit(message=' ___ done -_~'):
     print(message)
@@ -29,7 +30,6 @@ except:
 
 PREFIXE_NOM_IMAGE = '' #pour renommer l'image avec un préfixe donné
 HEADERS = ('User-Agent', 'Mozilla/5.0 (Linux; Android 5.1.1; KFFOWI Build/LVY48F) AppleWebKit/537.36 (KHTML, like Gecko) Silk/59.3.1 like Chrome/59.0.3071.117 Safari/537.36')
-#HEADERS = {'User-Agent': 'Mozilla/5.0 (Linux; Android 5.1.1; KFFOWI Build/LVY48F) AppleWebKit/537.36 (KHTML, like Gecko) Silk/59.3.1 like Chrome/59.0.3071.117 Safari/537.36'}
 FANCY_BANNER = '    ___                      ___ _          \n' + \
     '   /   \_____      ___ __   / _ (_) ___ ___ \n' + \
     "  / /\ / _ \ \ /\ / / '_ \ / /_)/ |/ __/ __|\n" + \
@@ -249,20 +249,14 @@ assert point_position("image2.jpeg") == 6
 assert last_slash_position('toto') == -1
 assert last_slash_position('http://') == 6
 
-def debug_arg(argv):
-    print(' *** DEBUG there is {} arguments: {}'.format(len(argv), argv)) #arg_numbers = len(argv)
-    i = 0
-    for dummy_arg in argv:
-        print('argument {}: {}'.format(i, dummy_arg))
-        i += 1
-
 if __name__ == '__main__':
     print(FANCY_BANNER)
-    #debug_arg(argv)
-    try:
-        folder = argv[1]
-    except IndexError:
-        program_exit("Usage : python3 recup-img.py folder [-url url] [name_prefixe]\n")
+    parser = argparse.ArgumentParser(description='download "linked pics" from Internet page')
+    parser.add_argument('folder', help='the folder where you want to download pics')
+    parser.add_argument('-url', nargs='?', help='url where the linked pics are diplayed')
+    parser.add_argument('-prefix', nargs='?', help='prefix for the pictures names')
+    args = parser.parse_args()
+    folder = args.folder
     if not os.path.isdir(folder):
         create_folder = input("The folder {} does not exist, should I create it?\n(y/n) ".format(folder))
         if create_folder == 'y':
@@ -271,16 +265,12 @@ if __name__ == '__main__':
             program_exit("m'kay")
     if not folder[-1] == '/':
         folder += '/'
-    try:
-        prefixe_nom_image = argv[2]
-    except IndexError:
+    if args.prefix:
+        prefixe_nom_image = args.prefix
+    else:
         prefixe_nom_image = PREFIXE_NOM_IMAGE
-    if prefixe_nom_image[0:4] == '-url':
-        url = argv[3]
-        try:
-            prefixe_nom_image = argv[4]
-        except IndexError:
-            prefixe_nom_image = PREFIXE_NOM_IMAGE
+    if args.url:
+        url = args.url
         print("\nWill try to download pics from {} to {}\n".format(url, folder))
         image_downloader_linked(url, folder, prefixe_nom_image)
     else:
