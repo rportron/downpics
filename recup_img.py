@@ -163,6 +163,8 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
     Vérifie s'il n'y a pas déjà une image du même nom (avec le prefixe) dans le dossier folder
     Si c'est le cas et si pas de préfixe proposé alors ajoute un suffixe et le signale à l'utilisateur
     '''
+    if not (folder[-1] == '/' or folder[-1] == '\\'):
+        folder += os.sep #'/'
     soup = decode(url, headers)
     #search_pics = re.compile('[a-z0-9]+\.(gif|jpg|jpeg|png)+')
     search_pics = re.compile('(.)+\.[(gif|jpg|jpeg|png)]+$')
@@ -263,8 +265,6 @@ if __name__ == '__main__':
             os.mkdir(folder)
         else:
             program_exit("m'kay")
-    if not folder[-1] == '/':
-        folder += '/'
     if args.prefix:
         prefixe_nom_image = args.prefix
     else:
