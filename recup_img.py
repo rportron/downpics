@@ -28,7 +28,7 @@ try:
 except:
     program_exit('You need to install BeautifulSoup first : pip install beautifulsoup4')
 
-PREFIXE_NOM_IMAGE = '' #pour renommer l'image avec un préfixe donné
+PREFIXE_NOM_IMAGE = '' #by default don't add a prefix to the image name
 HEADERS = ('User-Agent', 'Mozilla/5.0 (Linux; Android 5.1.1; KFFOWI Build/LVY48F) AppleWebKit/537.36 (KHTML, like Gecko) Silk/59.3.1 like Chrome/59.0.3071.117 Safari/537.36')
 FANCY_BANNER = '    ___                      ___ _          \n' + \
     '   /   \_____      ___ __   / _ (_) ___ ___ \n' + \
@@ -40,24 +40,22 @@ FANCY_BANNER = '    ___                      ___ _          \n' + \
 #url functions #
 ################
 def last_slash_position(url):
-    ''' Renvoie la position du dernier slash '''
+    ''' Return the last slash (/) position '''
     position = -1
     for dummy_slash in re.finditer('/', url):
         position = dummy_slash.start()
     return position
 
 def point_position(url):
-    '''
-    Renvoie la position du dernier point de l'url => le point avant l'extension du nom de fichier
-    '''
+    ''' Return the last point position (the one with the file extension) '''
     position = -1
     for dummy_point in re.finditer('\.', url):
         position = dummy_point.start()
     return position
 
 def racine_du_site(url):
-    ''' Renvoie la racine de l'url => utile pour les chemins relatifs '''
-    debut = 8 # position minimal : https:// = 8 caractères
+    ''' Return the root url (needed for relative path) '''
+    debut = 8 # mnimal position: https:// = 8 caracters
     position = last_slash_position(url)
     if position > debut:
         return url[:position + 1]
@@ -65,15 +63,15 @@ def racine_du_site(url):
         return url
 
 def lien_absolu(url):
-    ''' Renvoie vrai si le lien est un lien absolu '''
+    ''' Return True if the link is an absolute url (not relative) '''
     return url[0:4].lower() == 'http'
 
 def lien_slash_slash(url):
-    ''' Détecte si l'url commence par // '''
+    ''' Return True if the url begins with // '''
     return url[0:2].lower() == '//'
 
 def instagram(url):
-    ''' Renvoie vrai si c'est un lien Instagram '''
+    ''' Return True if it's an Instagram url '''
     return url[0:25].lower() == 'https://www.instagram.com'
 
 def url_is_chan(url):
@@ -82,14 +80,12 @@ def url_is_chan(url):
     return (url[:23] == 'http://boards.4chan.org' or url[:15] == 'https://8ch.net')
 
 def nom_de_l_image(url):
-    '''
-    Renvoie le nom de l'image (sert pour sauvegarder l'image avec son nom)
-    '''
+    ''' Return the pic's name (needed to save the pic) '''
     image_position = last_slash_position(url)
     return url[image_position + 1::]
 
 def decode(url, headers):
-    ''' Renvoie l'url parsé avec BeautifulSoup '''
+    ''' Return the parsed url with BeautifulSoup '''
     #Changement headers
     opener = urllib.request.build_opener()
     opener.addheaders = [headers]
@@ -123,9 +119,8 @@ def download_pic(complete_link, pic_complete_destination, url, lien, nom_image):
 ###################
 def numerotation_image(nom_image):
     '''
-    Vérifie si la numérotation est sur un seul chiffre, rajoute un zéro le cas échéant
-    Renvoi le nom de l'image
-    Exemple 1.png devient 01.png
+    Check the pic's name, if it's a unique number: add a 0 and return the new name
+    Example: 1.png becomes 01.png
     '''
     DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     #print(' *** DEBUG numerotation_image - nom image sur lequel on travaille : ', nom_image[::point_position(nom_image)])
@@ -134,7 +129,7 @@ def numerotation_image(nom_image):
     return nom_image
 
 def extension_valide(nom_image):
-    ''' Renvoie True si l'extension de l'image correspond à une image '''
+    ''' Return True if the extension is a pic's extension '''
     EXTENSIONS_IMAGE = ['gif', 'jpg', 'jpeg', 'png']
     position_point = point_position(nom_image)
     extension = nom_image[position_point + 1:]
@@ -145,7 +140,7 @@ def extension_valide(nom_image):
         return False
 
 def pic_name_analyse(url, title):
-    ''' Analyse l'url et le titre pour trouver un prefixe de l'image valide '''
+    ''' Basic url and title analysis: to find a good prefix for the pic's name '''
     if lien_absolu(url):
         lien = url[4:]
     if lien_slash_slash(url):
@@ -159,12 +154,11 @@ def pic_name_analyse(url, title):
 
 def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, headers = HEADERS):
     '''
-    Télécharge dans le dossier "folder" les images ciblées par des liens de la page "url"
-    Vérifie s'il n'y a pas déjà une image du même nom (avec le prefixe) dans le dossier folder
-    Si c'est le cas et si pas de préfixe proposé alors ajoute un suffixe et le signale à l'utilisateur
+    Download the linked pics from "url" to the directory "folder"
+    Check if there is not already a file with the same name, if so add automatically a random suffix
     '''
     if not (folder[-1] == '/' or folder[-1] == '\\'):
-        folder += os.sep #'/'
+        folder += os.sep
     soup = decode(url, headers)
     #search_pics = re.compile('[a-z0-9]+\.(gif|jpg|jpeg|png)+')
     search_pics = re.compile('(.)+\.[(gif|jpg|jpeg|png)]+$')
@@ -229,7 +223,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
 #########################
 
 def image_downloader_linked_serial(liste_urls, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE):
-    ''' Télécharge par lots à partir d'une liste '''
+    ''' Batch download using url from a Python list '''
     i = 10
     #i = 20
     for dummy_url in liste_urls:
@@ -237,7 +231,7 @@ def image_downloader_linked_serial(liste_urls, folder, prefixe_nom_image = PREFI
         i += 1
 
 def image_downloader_linked_file(file, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE):
-    ''' Télécharge par lots à partir d'un fichier d'url : 1 url par ligne'''
+    ''' Batch download using url from a file (one url a line)'''
     i = 20
     with open(file,'r') as my_file:
         for line in my_file:
