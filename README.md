@@ -15,13 +15,16 @@ cd downpics
 
 # How to use it
 ## Command line
-`python3 recup-img.py folder [-url url] [name_prefixe]`
+`python3 recup-img.py folder [-url url] [-prefix name_prefixe]`
 
 It will download pics from url into the folder (with the name_prefixe before if given)
 Don't write -url if you want to repeatly download pics from various url
 
 For example:
-`python3 recup-image.py -url http://portron.org/downpics.html toto_` will download all "linked pics" from the url with toto_ added before the pic name
+`python3 recup-image.py . -url http://portron.org/downpics.html -prefix toto_` will download all "linked pics" from the given url with toto_ added before the pic name to the current directory
 
 ## As a library
 import ...
+
+## GUI
+Using recup_img_xwin (development still in progress)
