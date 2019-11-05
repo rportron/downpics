@@ -22,6 +22,7 @@ def go_downpics():
         folder = app.find_the_location
         prefixe_nom_image = app.prefix_entry.get()
         #print("DEBUG: this is the : ", prefixe_nom_image)
+        #app.status_message = 'Downloading "linked pics" from ' + app.url_str + ' to ' + app.find_the_location #ajout du 09/10/2019 : ne fonctionne toujours pas
         app.destroy()
         app.downloading()
         recup_img.image_downloader_linked(url, folder, prefixe_nom_image)
@@ -38,11 +39,11 @@ class Recup_img_Frame(tkinter.Tk):
         self.prefix_entry_text = ''
         self.status_message = ''
         self.initialize()
-       
+
     def initialize(self):
         #logo
         self.canva = tkinter.Canvas(self, width = 666, height = 200, bg = 'pink')
-        self.canva.create_text(333, 60, text=recup_img.FANCY_BANNER)
+        self.canva.create_text(333, 60, font=("Arial", 18), text=recup_img.FANCY_BANNER)
         self.canva.create_text(333, 150, text=self.status_message)
         self.canva.create_text(630, 190, text='version ' + recup_img.VERSION)
         #Text
@@ -54,7 +55,7 @@ class Recup_img_Frame(tkinter.Tk):
         else:
             var_destination_text.set('Download "linked pics" to this location:')
         self.browse_button = tkinter.Button(self, text='Browse', command=file_select)
-        
+
         #url
         var_url_text = tkinter.StringVar()
         self.url_entry = tkinter.Entry(self, bg='pink')
@@ -70,10 +71,10 @@ class Recup_img_Frame(tkinter.Tk):
         self.button_quit = tkinter.Button(self, text='Quit', command=self.quit)
         #kepp all things together
         self.canva.grid(row = 1, columnspan = 2)
-        
+
         self.destination_text.grid(row = 2, column = 0)
         self.browse_button.grid(row=2, column=1)
-        
+
         self.url_text.grid(row = 3, column = 0, sticky = 'EW')
         self.url_entry.grid(row = 3, column = 1, sticky = 'EW')
 
@@ -82,7 +83,7 @@ class Recup_img_Frame(tkinter.Tk):
         self.empty_line_text.grid(row=6, columnspan=2)
         self.button_go.grid(row = 7, column = 0)
         self.button_quit.grid(row = 7, column = 1)
-    
+
     def downloading(self):
         #logo
         self.canva = tkinter.Canvas(self, width = 333, height = 100, bg = 'red')
@@ -100,7 +101,7 @@ class Recup_img_Frame(tkinter.Tk):
         self.empty_line_text.grid(row=3, columnspan=2)
         self.button_stop.grid(row = 4, column = 0)
         self.button_quit.grid(row = 4, column = 1)
-        
+
     def destroy(self):
         for c in self.winfo_children():
             c.destroy()
