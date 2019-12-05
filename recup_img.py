@@ -17,7 +17,8 @@ import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.94'
+VERSION = '0.95'
+EXTENSIONS_IMAGE = ['GIF', 'JPG', 'JPEG', 'PNG'] #valid extensions for this program
 
 def program_exit(message=' ___ done -_~'):
     print(message)
@@ -79,10 +80,32 @@ def url_is_chan(url):
     because the pic is downloaded twice '''
     return (url[:23] == 'http://boards.4chan.org' or url[:15] == 'https://8ch.net')
 
+def valide_extension(nom_image):
+    ''' Return True if the extension is a pic's extension '''
+    position_point = point_position(nom_image)
+    extension = nom_image[position_point + 1:]
+    if extension.upper() in EXTENSIONS_IMAGE:
+        return True
+    else:
+        return False
+
+def pic_correct_name(name):
+    ''' Check if the file's name ends with a correct pic extension and return a correct name '''
+    if valide_extension(name):
+        return name
+    else: #the file's name doesn't end with a correct extension
+        position = -1
+        for dummy_extension in EXTENSIONS_IMAGE:
+            for dummy_point in re.finditer(dummy_extension, name.upper()):
+                position = dummy_point.start()
+            if position > 0:
+                return name[:position + len(dummy_extension)]
+        return name #no valid extensiton found
+
 def nom_de_l_image(url):
     ''' Return the pic's name (needed to save the pic) '''
     image_position = last_slash_position(url)
-    return url[image_position + 1::]
+    return pic_correct_name(url[image_position + 1::])
 
 def decode(url, headers):
     ''' Return the parsed url with BeautifulSoup '''
@@ -135,17 +158,6 @@ def numerotation_image(nom_image):
         return '0' + nom_image
     return nom_image
 
-def extension_valide(nom_image):
-    ''' Return True if the extension is a pic's extension '''
-    EXTENSIONS_IMAGE = ['gif', 'jpg', 'jpeg', 'png']
-    position_point = point_position(nom_image)
-    extension = nom_image[position_point + 1:]
-    #print(' *** DEBUG extension_valide - travail sur l image {} avec comme extension {}'.format(nom_image, extension))
-    if extension.lower() in EXTENSIONS_IMAGE:
-        return True
-    else:
-        return False
-
 def pic_name_analyse(url, title):
     ''' Basic url and title analysis: to find a good prefix for the pic's name '''
     if lien_absolu(url):
@@ -195,7 +207,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                         #nom_image = prefixe_nom_image + pic_name_analyse(url, website_title).replace('/','_') + nom_image
                         nom_image = prefixe_nom_image + nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
                         print('\nA file with the same name is already here, it will be downloaded with the following name {}'.format(nom_image))
-                if extension_valide(nom_image) and name_ok:
+                if valide_extension(nom_image) and name_ok:
                     pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
                         download_pic(lien, pic_complete_destination, url, nom_image)
@@ -221,7 +233,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
         lien_image_instagram = str(recherche)[:index_depart][15:].replace('amp;','') #= le lien de l'image :)
         if lien_absolu(lien_image_instagram):
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
-            #print('\n *** DEBUG nom_image = ', nom_image)
+            print('\n *** DEBUG nom_image = ', nom_image)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
             download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, nom_image)

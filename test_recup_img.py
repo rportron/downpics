@@ -35,5 +35,16 @@ class TestUrlFunctions(unittest.TestCase):
         racine_du_site = recup_img.racine_du_site(url)
         self.assertEqual(racine_du_site, 'sametmax.com')
 
+class TestPicsFunctions(unittest.TestCase):
+    ''' Test all pics functions '''
+    def test_pic_correct_extension(self):
+        pic_name = 'coucoute.png'
+        correct_pic_name = recup_img.pic_correct_name(pic_name)
+        self.assertEqual(correct_pic_name, pic_name)
+    def test_correct_pic_name(self):
+        pic_name = "71757710_481082935825164_7112786787258754684_n.jpg?_nc_ht=scontent-cdt1-1.cdninstagram.com&_nc_cat=100&oh=b8c5fe9f96fc1f5eed3038e77ebb4b80&oe=5E78CAD7"
+        correct_pic_name = recup_img.pic_correct_name(pic_name)
+        self.assertEqual(correct_pic_name, "71757710_481082935825164_7112786787258754684_n.jpg")
+
 if __name__ == '__main__':
     unittest.main()
