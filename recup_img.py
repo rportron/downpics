@@ -109,13 +109,17 @@ def download_pic(complete_link, pic_complete_destination, url, nom_image):
     ''' Download the pic from Internet (complete_link) to a local place (pic_complete_destination)
     url: the url where you want do download pictures (provided by the user)
     nom_image: the name which the pic will be saved with'''
+    if len(complete_link) > 50: #shorten urls for the print information
+        lien = complete_link[0:50] + ' (...)'
+    else:
+        lien = complete_link
     try:
         urllib.request.urlretrieve(complete_link, pic_complete_destination)
-        print('Saving: ', complete_link)
+        print('Saving: ', lien)
     except urllib.request.HTTPError:
-        print('Download ERROR: {} (404: the page {} does not exist)'.format(nom_image, complete_link))
+        print('Download ERROR: {} (404: the page {} does not exist)'.format(nom_image, lien))
     except OSError:
-        print('Download ERROR: {} (problem with the file name concerning the link {})'.format(nom_image, complete_link))
+        print('Download ERROR: {} (problem with the file name concerning the link {})'.format(nom_image, lien))
 
 ###################
 # image functions #
@@ -218,7 +222,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
-            print('Saving Instagram pic: ', lien_image_instagram)
+            #print('Saving Instagram pic')
             download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, nom_image)
 
 #########################
