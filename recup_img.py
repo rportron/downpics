@@ -55,7 +55,7 @@ def point_position(url):
 
 def racine_du_site(url):
     ''' Return the root url (needed for relative path) '''
-    debut = 8 # mnimal position: https:// = 8 caracters
+    debut = 8 # minimal position: https:// = 8 caracters
     position = last_slash_position(url)
     if position > debut:
         return url[:position + 1]
@@ -217,12 +217,13 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
         insta_og = re.compile('og:image')
         result = insta_og.search(str(recherche))
         index_depart = result.span()[0] - 12 #--> position du début de og:image
-        lien_image_instagram = str(recherche)[:index_depart][15:] #= le lien de l'image :)
+        #lien_image_instagram = str(recherche)[:index_depart][15:] #= le lien de l'image :)
+        lien_image_instagram = str(recherche)[:index_depart][15:].replace('amp;','') #= le lien de l'image :)
         if lien_absolu(lien_image_instagram):
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
+            #print('\n *** DEBUG nom_image = ', nom_image)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
-            #print('Saving Instagram pic')
             download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, nom_image)
 
 #########################
