@@ -233,7 +233,6 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
         lien_image_instagram = str(recherche)[:index_depart][15:].replace('amp;','') #= le lien de l'image :)
         if lien_absolu(lien_image_instagram):
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
-            print('\n *** DEBUG nom_image = ', nom_image)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 random_suffix = '_' + str(round(10000*random()))
                 nom_image = nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]

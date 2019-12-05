@@ -53,6 +53,10 @@ class TestPicsFunctions(unittest.TestCase):
         pic_name = 'virus.exe'
         is_a_pic = not recup_img.valide_extension(pic_name)
         self.assertTrue(is_a_pic)
+    def test_simple_number_pic(self):
+        pic_name = '5.jpeg'
+        correct_pic_name = recup_img.numerotation_image(pic_name)
+        self.assertEqual(correct_pic_name, '05.jpeg')
 
 if __name__ == '__main__':
     unittest.main()
