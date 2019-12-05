@@ -45,6 +45,14 @@ class TestPicsFunctions(unittest.TestCase):
         pic_name = "71757710_481082935825164_7112786787258754684_n.jpg?_nc_ht=scontent-cdt1-1.cdninstagram.com&_nc_cat=100&oh=b8c5fe9f96fc1f5eed3038e77ebb4b80&oe=5E78CAD7"
         correct_pic_name = recup_img.pic_correct_name(pic_name)
         self.assertEqual(correct_pic_name, "71757710_481082935825164_7112786787258754684_n.jpg")
+    def test_boolean_return_to_pic_extension(self):
+        pic_name = 'picture.GiF'
+        is_a_pic = recup_img.valide_extension(pic_name)
+        self.assertTrue(is_a_pic)
+    def test_boolean_return_to_nonpic_extension(self):
+        pic_name = 'virus.exe'
+        is_a_pic = not recup_img.valide_extension(pic_name)
+        self.assertTrue(is_a_pic)
 
 if __name__ == '__main__':
     unittest.main()

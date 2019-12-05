@@ -197,7 +197,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 name_ok = True
                 nom_image = numerotation_image(nom_de_l_image(lien))
                 if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                    print(url)
+                    #print(url)
                     if url_is_chan(url): #because in xchan : pic is downloaded twice
                         name_ok = False
                     else:
@@ -235,7 +235,9 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             nom_image = numerotation_image(nom_de_l_image(lien_image_instagram))
             print('\n *** DEBUG nom_image = ', nom_image)
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
-                raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
+                random_suffix = '_' + str(round(10000*random()))
+                nom_image = nom_image[:point_position(nom_image)] + random_suffix + nom_image[point_position(nom_image):]
+                #raise IOError('File {} already exists in the folder {}.'.format(nom_image, folder))
             download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, nom_image)
 
 #########################
