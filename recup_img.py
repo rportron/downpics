@@ -96,7 +96,7 @@ def decode(url, headers):
     except ValueError:
         program_exit('\n *** ERROR *** Unknown url')
     except urllib.error.HTTPError:
-        program_exit('\n *** ERROR 404: the webpage does not exist ***')        
+        program_exit('\n *** ERROR 404: the webpage does not exist ***')
     data = response.read()      # a `bytes` object
     try:
         text = data.decode('utf-8') # a `str`; this step can't be used if data is binary
@@ -105,14 +105,17 @@ def decode(url, headers):
         text = data
     return BeautifulSoup(text, 'html.parser')
 
-def download_pic(complete_link, pic_complete_destination, url, lien, nom_image):
+def download_pic(complete_link, pic_complete_destination, url, nom_image):
+    ''' Download the pic from Internet (complete_link) to a local place (pic_complete_destination)
+    url: the url where you want do download pictures (provided by the user)
+    nom_image: the name which the pic will be saved with'''
     try:
         urllib.request.urlretrieve(complete_link, pic_complete_destination)
-        print('Saving: ', racine_du_site(url) + lien)
+        print('Saving: ', complete_link)
     except urllib.request.HTTPError:
-        print('Download ERROR: {} (404: the page {} does not exist)'.format(nom_image, racine_du_site(url) + lien))
+        print('Download ERROR: {} (404: the page {} does not exist)'.format(nom_image, complete_link))
     except OSError:
-        print('Download ERROR: {} (problem with the file name concerning the link {})'.format(nom_image, racine_du_site(url) + lien))
+        print('Download ERROR: {} (problem with the file name concerning the link {})'.format(nom_image, complete_link))
 
 ###################
 # image functions #
@@ -191,11 +194,11 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
                 if extension_valide(nom_image) and name_ok:
                     pic_complete_destination = folder + prefixe_nom_image + nom_image
                     if lien_absolu(lien):
-                        download_pic(lien, pic_complete_destination, url, lien, nom_image)
+                        download_pic(lien, pic_complete_destination, url, nom_image)
                     elif lien_slash_slash(lien): #lien commençant par //
-                        download_pic('https:' + lien, pic_complete_destination, url, lien, nom_image)
+                        download_pic('https:' + lien, pic_complete_destination, url, nom_image)
                     else:
-                        download_pic(racine_du_site(url) + lien, pic_complete_destination, url, lien, nom_image)
+                        download_pic(racine_du_site(url) + lien, pic_complete_destination, url, nom_image)
 #                else:
 #                    print('*** DEBUG extension non valide ***')
 #            else:
@@ -216,7 +219,7 @@ def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, 
             if os.path.isfile(folder + prefixe_nom_image + nom_image):
                 raise IOError('Le fichier {} existe dans le répertoire {}.'.format(nom_image, folder))
             print('Saving Instagram pic: ', lien_image_instagram)
-            download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, lien, nom_image)
+            download_pic(lien_image_instagram, folder + prefixe_nom_image + nom_image, url, nom_image)
 
 #########################
 # Alternative functions #
