@@ -21,8 +21,7 @@ def go_downpics():
         #print("DEBUG: this is the url: ", url)
         folder = app.find_the_location
         prefixe_nom_image = app.prefix_entry.get()
-        #print("DEBUG: this is the : ", prefixe_nom_image)
-        #app.status_message = 'Downloading "linked pics" from ' + app.url_str + ' to ' + app.find_the_location #ajout du 09/10/2019 : ne fonctionne toujours pas
+        app.prefix_entry_text = prefixe_nom_image
         app.destroy()
         app.downloading()
         recup_img.image_downloader_linked(url, folder, prefixe_nom_image)
@@ -63,8 +62,10 @@ class Recup_img_Frame(tkinter.Tk):
         self.url_text = tkinter.Label(self, textvariable=var_url_text)
 
         #prefix
+        var_prefix_text = tkinter.StringVar()
+        var_prefix_text.set(self.prefix_entry_text)
         self.prefix_text = tkinter.Label(self, text='with this optional pics name prefix:')
-        self.prefix_entry = tkinter.Entry(self, bg='pink')
+        self.prefix_entry = tkinter.Entry(self, textvariable=var_prefix_text, bg='pink')
         self.empty_line_text = tkinter.Label(self, text='')
         #buttons
         self.button_go = tkinter.Button(self, text='Go!', command=go_downpics)
