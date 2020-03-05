@@ -27,4 +27,4 @@ For example:
 import ...
 
 ## GUI
-Using recup_img_xwin (development still in progress)
+Using recup_img_xwin
