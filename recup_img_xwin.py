@@ -24,8 +24,11 @@ def go_downpics():
         app.prefix_entry_text = prefixe_nom_image
         app.destroy()
         app.downloading()
-        recup_img.image_downloader_linked(url, folder, prefixe_nom_image)
-        app.status_message = 'Download completed'
+        try:
+            recup_img.image_downloader_linked(url, folder, prefixe_nom_image, exit_sys=False)
+            app.status_message = 'Download completed'
+        except NameError:
+            app.status_message = 'Download Error'
         app.url_str = ''
         app.destroy()
 

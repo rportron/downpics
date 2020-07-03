@@ -17,12 +17,15 @@ import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.96'
+VERSION = '0.961'
 EXTENSIONS_IMAGE = ['GIF', 'JPG', 'JPEG', 'PNG'] #valid extensions for this program
 
-def program_exit(message=' ___ done -_~'):
+def program_exit(message=' ___ done -_~', exit_sys=True):
     print(message)
-    exit()
+    if exit_sys:
+        exit()
+    else:
+        raise NameError(message)
 
 try:
     from bs4 import BeautifulSoup
@@ -107,8 +110,9 @@ def nom_de_l_image(url):
     image_position = last_slash_position(url)
     return pic_correct_name(url[image_position + 1::])
 
-def decode(url, headers):
-    ''' Return the parsed url with BeautifulSoup '''
+def decode(url, headers, exit_sys=True):
+    ''' Return the parsed url with BeautifulSoup
+    in case of error if exit_sys = True, the program will quit '''
     #Changement headers
     opener = urllib.request.build_opener()
     opener.addheaders = [headers]
@@ -117,11 +121,11 @@ def decode(url, headers):
     try:
         response = urllib.request.urlopen(url)
     except ValueError:
-        program_exit('\n *** ERROR *** Unknown url')
+        program_exit('\n *** ERROR *** Unknown url', exit_sys=exit_sys)
     except urllib.error.HTTPError:
-        program_exit('\n *** ERROR 404: the webpage does not exist ***')
+        program_exit('\n *** ERROR 404: the webpage does not exist ***', exit_sys=exit_sys)
     except urllib.error.URLError:
-        program_exit('\n *** ERROR *** the website refused the connection')
+        program_exit('\n *** ERROR *** the website refused the connection', exit_sys=exit_sys)
     data = response.read()      # a `bytes` object
     try:
         text = data.decode('utf-8') # a `str`; this step can't be used if data is binary
@@ -173,14 +177,15 @@ def pic_name_analyse(url, title):
 
 ##############################
 
-def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, headers = HEADERS):
+def image_downloader_linked(url, folder, prefixe_nom_image = PREFIXE_NOM_IMAGE, headers = HEADERS, exit_sys=True):
     '''
     Download the linked pics from "url" to the directory "folder"
     Check if there is not already a file with the same name, if so add automatically a random suffix
+    exit_sys: if True will quit in case of error
     '''
     if not (folder[-1] == '/' or folder[-1] == '\\'):
         folder += os.sep
-    soup = decode(url, headers)
+    soup = decode(url, headers, exit_sys=exit_sys)
     #search_pics = re.compile('[a-z0-9]+\.(gif|jpg|jpeg|png)+')
     search_pics = re.compile('(.)+\.[(gif|jpg|jpeg|png)]+$')
     for link in soup.find_all('a'):
