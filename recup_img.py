@@ -11,13 +11,13 @@ python3 recup-image.py destination_folder [-url url] [picture_name_prefixe]
 
 """
 
-from sys import argv
+from sys import exit
 import argparse
 import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.95'
+VERSION = '0.96'
 EXTENSIONS_IMAGE = ['GIF', 'JPG', 'JPEG', 'PNG'] #valid extensions for this program
 
 def program_exit(message=' ___ done -_~'):
@@ -120,6 +120,8 @@ def decode(url, headers):
         program_exit('\n *** ERROR *** Unknown url')
     except urllib.error.HTTPError:
         program_exit('\n *** ERROR 404: the webpage does not exist ***')
+    except urllib.error.URLError:
+        program_exit('\n *** ERROR *** the website refused the connection')
     data = response.read()      # a `bytes` object
     try:
         text = data.decode('utf-8') # a `str`; this step can't be used if data is binary
