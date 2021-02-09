@@ -17,8 +17,9 @@ import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.961'
+VERSION = '0.962'
 EXTENSIONS_IMAGE = ['GIF', 'JPG', 'JPEG', 'PNG'] #valid extensions for this program
+DEBUG = False
 
 def program_exit(message=' ___ done -_~', exit_sys=True):
     print(message)
@@ -124,7 +125,9 @@ def decode(url, headers, exit_sys=True):
         program_exit('\n *** ERROR *** Unknown url', exit_sys=exit_sys)
     except urllib.error.HTTPError:
         program_exit('\n *** ERROR 404: the webpage does not exist ***', exit_sys=exit_sys)
-    except urllib.error.URLError:
+    except urllib.error.URLError as e:
+        if DEBUG:
+            print(f"*** DEBUG *** When trying to acess to url: {url}, there was the folowing error {e}")
         program_exit('\n *** ERROR *** the website refused the connection', exit_sys=exit_sys)
     data = response.read()      # a `bytes` object
     try:
