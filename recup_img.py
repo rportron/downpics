@@ -17,7 +17,7 @@ import urllib.request, re
 import os
 from random import random
 
-VERSION = '0.962'
+VERSION = '0.963'
 EXTENSIONS_IMAGE = ['GIF', 'JPG', 'JPEG', 'PNG'] #valid extensions for this program
 DEBUG = False
 
@@ -128,7 +128,7 @@ def decode(url, headers, exit_sys=True):
     except urllib.error.URLError as e:
         if DEBUG:
             print(f"*** DEBUG *** When trying to acess to url: {url}, there was the folowing error {e}")
-        program_exit('\n *** ERROR *** the website refused the connection', exit_sys=exit_sys)
+        program_exit('\n *** ERROR *** the website could not been accessed (you may need to define a proxy or you have a DNS restriction)', exit_sys=exit_sys)
     data = response.read()      # a `bytes` object
     try:
         text = data.decode('utf-8') # a `str`; this step can't be used if data is binary
